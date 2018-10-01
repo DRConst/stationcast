@@ -1,0 +1,46 @@
+<footer class="footer" id="footer">
+  <div class="container" style="max-width:100%; height:100%">
+    <div class="row" style="height:100%">
+      <div class="col-sm-2 d-none d-xl-block"></div>
+      <div class="col border border-bottom-0" id="centreCol" style="background-clip: content-box;">
+        <div id="title">
+          <span id="track" style="color: #c9c9c9"></span>
+          <div id="timer" style="color: #c9c9c9">0:00</div>
+          <div id="duration" style="color: #c9c9c9">0:00</div>
+        </div>
+
+        <div class="controlsOuter">
+          <div class="controlsInner">
+            <div id="loading"></div>
+            <div class="btn" id="playBtn" (click)="onPlay()"></div>
+            <div class="btn" id="pauseBtn" (click)="onPause()"></div>
+            <div class="btn" id="prevBtn" (click)="onPrev()"></div>
+            <div class="btn" id="nextBtn" (click)="onNext()"></div>
+          </div>
+          <div class="btn" id="playlistBtn" (click)="togglePlaylist()"></div>
+          <app-playlist-view></app-playlist-view>
+          <div class="btn" id="volumeBtn" style="z-index: 2;" (click)="toggleVolume()">
+            <div class="slidecontainer" id="slidecontainer">
+              <input type="range" min="0" max="100" value="0" class="slider" id="volumeRange">
+            </div>
+          </div>
+        </div>
+
+        <!-- Fucking position absolute messing with padding--->
+        <div _ngcontent-c1="" style="width: 100%;position: relative;top: 25%;">
+          <div id="waveform"></div>
+          <div _ngcontent-c1="" id="bar" style="z-index: 1;"></div>
+          <div _ngcontent-c1="" id="progress"></div>
+          <div _ngcontent-c1="" id="hiddenSeekBar"></div>
+        </div>
+      </div>
+
+      <div class="col-sm-2 d-none d-xl-block"></div>
+    </div>
+  </div>
+  <div id="playlist">
+  </div>
+</footer>
+
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">

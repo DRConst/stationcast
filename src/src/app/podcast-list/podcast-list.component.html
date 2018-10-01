@@ -1,0 +1,10 @@
+<div class="row">
+  <div class="col-sm-3" *ngFor="let podcast of podcasts" (click)="onCardClick(podcast)">
+    <div class="card mb-4 box-shadow text-center">
+      <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: auto; width: 100%; display: block;object-fit: contain;" src={{podcast.thumb}} data-holder-rendered="true">
+      <div class="card-body">
+        <p class="card-text">{{podcast.name}}</p>
+      </div>
+    </div>
+  </div>
+</div>
