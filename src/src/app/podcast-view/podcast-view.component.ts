@@ -26,18 +26,29 @@ export class PodcastViewComponent implements OnInit {
 
   headerPlay()
   {
-    //Add all not completed episodes to the playlist
 
+    this.playerService.currentPodcast.next(this.podcast);
+    var added = false;
+    //Add all not completed episodes to the playlist
     this.podcast.episodes.forEach(ep =>
     {
       if(!ep.completed)
       {
+        if(!added)
+        {
+          this.playerService.setCurrentEpisode(ep);
+          added = true;
+        }
         this.playerService.enqueueEpisode.next(ep);
       }
     });
+
+
+
+
   }
 
-  
+
   headerDelete()
   {
 
@@ -90,11 +101,13 @@ export class PodcastViewComponent implements OnInit {
   toggleCompleted(episode)
   {
       this.selectedEpisode = episode;
+      var name = this.podcast.name + '|' + episode.name;
+      name = name.replace(/\"/g, "\\\"");
       $.ajax({
         url:"https://audioback.diogoconstancio.com/episodeCompletedStatus",
         type:"POST",
         contentType:"application/json; charset=utf-8",
-        data:"{\"name\" : \"" + this.podcast.name + '|' + episode.name + "\", \"completed\" : " + !episode.completed + "}",
+        data:"{\"name\" : \"" + name + "\", \"completed\" : " + !episode.completed + "}",
         success: () =>
         {
             episode.completed = !episode.completed;

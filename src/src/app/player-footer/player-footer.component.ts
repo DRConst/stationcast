@@ -28,6 +28,7 @@ export class PlayerFooterComponent implements OnInit {
     seekBackup: any;
 
     hasSeeken: any;
+    hasEnded: any;
 
     wave: any;
 
@@ -55,7 +56,7 @@ export class PlayerFooterComponent implements OnInit {
     }
 
     saveProgressCallback(thisRef) {
-        if (thisRef.sound && thisRef.hasSeeken) {
+        if (thisRef.sound && thisRef.hasSeeken && !thisRef.hasEnded) {
 
             $.ajax({
                 url: "https://audioback.diogoconstancio.com/updatePosition",
@@ -67,9 +68,16 @@ export class PlayerFooterComponent implements OnInit {
 
             thisRef.currentEpisode.elapsed = thisRef.sound.seek();
 
-            //if we're 1 minute from the end, mark as completed
-            if (thisRef.currentEpisode.elapsed + 60 > thisRef.currentEpisode.length)
-                thisRef.currentEpisode.completed = true;
+            //For long audiobooks, set complete threshold at either 5 minutes or 10%
+            var threshold = 300;
+            if (0.1 * thisRef.currentEpisode.length < 300){
+                threshold = 0.1 * thisRef.currentEpisode.length;
+            }
+            if (thisRef.currentEpisode.elapsed > thisRef.currentEpisode.length - threshold)
+            {
+              thisRef.currentEpisode.completed = true;
+            }
+
         }
     }
 
@@ -125,6 +133,8 @@ export class PlayerFooterComponent implements OnInit {
                 //this.play();
             },
             onplay: function() {
+                thisRef.hasEnded = false;
+                thisRef.wave.stop();
                 thisRef.wave.start();
             },
             onpause: function(id) {
@@ -142,8 +152,12 @@ export class PlayerFooterComponent implements OnInit {
                 }
             },
             onend: function() {
+                thisRef.hasEnded = true;
                 thisRef.playerService.endEpisode.next(0);
                 thisRef.wave.stop();
+                thisRef.onPause()
+                thisRef.onNext();
+
             }
         });
     }
