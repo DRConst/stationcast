@@ -1,0 +1,17 @@
+version: "3"
+services:
+  app:
+    build: ./buildDir
+    user: "root"
+    restart: always
+    working_dir: /home/Server
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./src/:/home/Server
+      - ./files/:/home/files
+    ports:
+      - 127.0.0.1:9009:3000
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash
