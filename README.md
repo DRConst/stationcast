@@ -31,4 +31,10 @@ A cross platform Podcast platform based on an Angular frontend and NodeJS backen
 - [ ] Mobile player layout fix
 - [ ] Audiobook browser
 
+## FAQ
+#### Where are my podcasts?
+If you want to backup or access you podcast audio files, check the files/ folder in the backend root path.
+
+##
+
 You can follow the app development in our [Trello board](https://trello.com/b/HiThha8b). Feel free to stop by and add you sugestions.
