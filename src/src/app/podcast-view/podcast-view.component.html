@@ -16,6 +16,7 @@
       <div class="btn-group" role="group" aria-label="Basic example">
         <button type="button" class="btn btn-secondary" (click)="headerPlay()">Play</button>
         <button type="button" class="btn btn-secondary" (click)="headerDelete()">Delete</button>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editPodecastModal" (click)="headerEdit()">Edit</button>
         <button type="button" class="btn btn-secondary" (click)="headerUpdate()">Check For Updates</button>
         <button type="button" class="btn btn-secondary" (click)="headerHome()">Podcast Homepage</button>
       </div>
@@ -80,8 +81,9 @@
   </div>
 </div>
 
+
 <!-- Modal -->
-<div class="modal fade" id="resetPosModal" tabindex="-1" role="dialog" aria-labelledby="resetPosModalLabel" aria-hidden="true">
+<div class="modal fade" id="resetPosModal" tabindex="-1" role="dialog" aria-labelledby="resetPosModalLabel" aria-hidden="false">
   <div class="modal-dialog " role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -89,6 +91,50 @@
         <div class="btn-group">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="resetProgress()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editPodecastModal" tabindex="-1" role="dialog" aria-labelledby="editPodecastModal" aria-hidden="false">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editPodcastModalTitle" style="line-height: 2;">Podcast Title</h5>
+      </div>
+      <div class="modal-body">
+        <!-- <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          </div>
+          <input type="text" class="form-control" id="podcastEditNameInput" aria-describedby="basic-addon3">
+        </div> -->
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Homepage&nbsp;&nbsp;</span>
+          </div>
+          <input type="text" class="form-control" id="podcastEditHomeInput" aria-describedby="basic-addon3">
+        </div>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Thumbnail&nbsp;&nbsp;</span>
+          </div>
+          <input type="text" class="form-control" id="podcastEditThumbInput" aria-describedby="basic-addon3">
+        </div>
+
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Description</span>
+          </div>
+          <textarea class="form-control" aria-label="With textarea" id="podcastEditDescInput"></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="saveHeaderEdit()">Save</button>
         </div>
       </div>
     </div>

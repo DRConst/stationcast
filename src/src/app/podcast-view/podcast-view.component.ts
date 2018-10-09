@@ -53,6 +53,31 @@ export class PodcastViewComponent implements OnInit {
   {
 
   }
+
+  headerEdit()
+  {
+    console.log(document.getElementById('editPodcastModalTitle'));
+    document.getElementById('editPodcastModalTitle').innerHTML = "Editing - " + this.podcast.name;
+    document.getElementById('podcastEditHomeInput').value = this.podcast.homepage;
+    document.getElementById('podcastEditThumbInput').value = this.podcast.thumb;
+    document.getElementById('podcastEditDescInput').value = this.podcast.desc;
+  }
+
+  saveHeaderEdit(){
+    console.log("saveHeaderEdit");
+    this.podcast.homepage = document.getElementById('podcastEditHomeInput').value;
+    this.podcast.thumb = document.getElementById('podcastEditThumbInput').value;
+    this.podcast.desc = document.getElementById('podcastEditDescInput').value;
+    var str = JSON.stringify(this.podcast);
+    str = str.replace(/\"/g, "\\\"");
+    $.ajax({
+      url:"https://audioback.diogoconstancio.com/updatePodcast",
+      type:"POST",
+      data:"{\"name\" : \"" + this.podcast.name + "\", \"podcast\" : \"" + str + "\"}",
+      contentType:"application/json; charset=utf-8"
+    });
+  }
+
   headerUpdate()
   {
 
