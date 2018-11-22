@@ -8,7 +8,9 @@ var compression = require('compression')
 var app = express();
 app.use(bodyParser.json());
 app.use(cors());
-app.use(compression());
+app.use(compression({
+  level: 9
+}));
 
 var podcastRoot = '/home/files/';
 
@@ -195,6 +197,50 @@ app.get('/listPodcasts', (req, res) => {
 })
 
 
+function procItemsNoOverwrite(items, path) {
+  var item = items.pop();
+
+  if (item == undefined) {
+    return;
+  }
+
+  item.title = unescape(item.title);
+
+  var episodeMeta = {};
+  episodeMeta.name = item.title;
+  episodeMeta.url = item.enclosure.link;
+  episodeMeta.desc = item.description;
+  episodeMeta.thumb = item.image;
+  episodeMeta.date = item.pubDate;
+  episodeMeta.completed = false;
+
+  var ep = episodeMeta.name.replace(/[^a-z0-9/-]/gi, '_');
+
+  var eMetaPath = path + '/' + ep + '.episodeMeta';
+
+  //console.log(episodeMeta.url);
+
+  //Only DL if meta is inexistant
+  if (episodeMeta.url != undefined && !fs.existsSync(eMetaPath)) {
+
+    var stream = request(episodeMeta.url).pipe(fs.createWriteStream(path + '/' + ep + '.mp3'));
+    stream.on('finish', function() {
+
+      mp3Duration(path + '/' + ep + '.mp3', function(err, duration) {
+
+        episodeMeta.length = duration;
+        if (!fs.existsSync(eMetaPath)) //Dont overwrite meta
+          fs.writeFileSync(eMetaPath, JSON.stringify(episodeMeta))
+      });
+
+      procItemsNoOverwrite(items, path);
+
+    });
+  } else {
+    procItemsNoOverwrite(items, path);
+  }
+}
+
 function procItems(items, path) {
   var item = items.pop();
 
@@ -237,6 +283,39 @@ function procItems(items, path) {
   }
 }
 
+app.post('/updatePodcast', (req, res) => {
+  var url = req.body.url;
+
+  request(url).then(body => {
+    var rss = JSON.parse(body);
+    var podcastInfo = rss.feed;
+    var podcastMeta = {};
+    podcastMeta.name = podcastInfo.title;
+    var path = podcastRoot + podcastMeta.name;
+
+    path = path.replace(/[^a-z0-9/-]/gi, '_');
+
+    try {
+      try {
+        fs.mkdirSync(path);
+      } catch (err) {}
+
+      fs.accessSync(path, fs.constants.R_OK | fs.constants.W_OK);
+
+      var pMetaPath = path + '/.podcastMeta';
+
+      procItemsNoOverwrite(rss.items, path);
+
+      res.status(200).send();
+
+    } catch (err) {
+      res.status(500).send();
+      console.error('no access!' + err);
+    }
+  });
+
+})
+
 app.post('/downloadPodcast', (req, res) => {
   var url = req.body.url;
 
@@ -264,19 +343,11 @@ app.post('/downloadPodcast', (req, res) => {
 
       fs.accessSync(path, fs.constants.R_OK | fs.constants.W_OK);
 
-
-
-
-
       var pMetaPath = path + '/.podcastMeta';
 
       fs.writeFileSync(pMetaPath, JSON.stringify(podcastMeta))
 
       procItems(rss.items, path);
-
-      rss.items.forEach(item => {
-
-      });
 
       res.status(200).send();
 
@@ -291,7 +362,7 @@ app.post('/downloadPodcast', (req, res) => {
 
 })
 
-app.post('/updatePodcast', (req, res) => {
+app.post('/updatePodcastMetadata', (req, res) => {
   var name = req.body.name;
   var podcastFolder = name.replace(/[^a-z0-9/-]/gi, '_');
 
@@ -313,7 +384,6 @@ app.post('/updatePodcast', (req, res) => {
     console.log(e);
     res.status(500).send();
   }
-}
-);
+});
 
 app.listen(3000, () => console.log('Audiobook backend running, recomend running using nodemon wrapped in a service'))
