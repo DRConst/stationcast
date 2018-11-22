@@ -1,0 +1,12 @@
+<div class="col-md-12">
+
+  <label for="url">Podcast RSS URL</label>
+  <form autocomplete="on" id="RSSForm" onsubmit="return false">
+    <div class="input-group">
+      <input type="url" class="form-control" id="url" placeholder="http://feeds.nightvalepresents.com/welcometonightvalepodcast">
+      <div class="input-group-append">
+        <button class="btn btn-secondary" (click)="onRSSDownload()">Download</button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,12 @@
+#playlist
+{
+  position: absolute;
+  bottom: 150px;
+  height: 75vh;
+  background: #171717;
+  right: 0px;
+  overflow-y: scroll;
+  border-color: #444444;
+  max-width: 500px;
+  width: 100vw;
+}
