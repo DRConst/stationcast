@@ -58,20 +58,20 @@ export class PodcastViewComponent implements OnInit {
   {
     console.log(document.getElementById('editPodcastModalTitle'));
     document.getElementById('editPodcastModalTitle').innerHTML = "Editing - " + this.podcast.name;
-    document.getElementById('podcastEditHomeInput').value = this.podcast.homepage;
-    document.getElementById('podcastEditThumbInput').value = this.podcast.thumb;
-    document.getElementById('podcastEditDescInput').value = this.podcast.desc;
+    (<HTMLInputElement>document.getElementById('podcastEditHomeInput')).value = this.podcast.homepage;
+    (<HTMLInputElement>document.getElementById('podcastEditThumbInput')).value = this.podcast.thumb;
+    (<HTMLInputElement>document.getElementById('podcastEditDescInput')).value = this.podcast.desc;
   }
 
   saveHeaderEdit(){
     console.log("saveHeaderEdit");
-    this.podcast.homepage = document.getElementById('podcastEditHomeInput').value;
-    this.podcast.thumb = document.getElementById('podcastEditThumbInput').value;
-    this.podcast.desc = document.getElementById('podcastEditDescInput').value;
+    this.podcast.homepage = (<HTMLInputElement>document.getElementById('podcastEditHomeInput')).value;
+    this.podcast.thumb = (<HTMLInputElement>document.getElementById('podcastEditThumbInput')).value;
+    this.podcast.desc = (<HTMLInputElement>document.getElementById('podcastEditDescInput')).value;
     var str = JSON.stringify(this.podcast);
     str = str.replace(/\"/g, "\\\"");
     $.ajax({
-      url:"https://audioback.diogoconstancio.com/updatePodcast",
+      url:"https://audioback.diogoconstancio.com/updatePodcastMetadata",
       type:"POST",
       data:"{\"name\" : \"" + this.podcast.name + "\", \"podcast\" : \"" + str + "\"}",
       contentType:"application/json; charset=utf-8"
@@ -80,12 +80,60 @@ export class PodcastViewComponent implements OnInit {
 
   headerUpdate()
   {
-
+    $.ajax({
+      url:"https://audioback.diogoconstancio.com/updatePodcast",
+      type:"POST",
+      data:"{\"url\" : \"" + this.podcast.url + "\"}",
+      contentType:"application/json; charset=utf-8"
+    });
   }
+
   headerHome()
   {
 
   }
+
+  sortByCompleted(){
+    var table = (<HTMLTableElement>document.getElementById('episodeTableBody'));
+    var rows = table.rows;
+    var rowArr = Array.from(rows);
+
+    rowArr.sort(function(a,b){
+      var aClass = a.cells[4].children[0].className;
+      var bClass = b.cells[4].children[0].className;
+
+      var aCompleted = (aClass == "fas fa-check-circle");
+      var bCompleted = (bClass == "fas fa-check-circle");
+
+
+
+      if(aCompleted && !bCompleted)
+      {
+        return 1;
+      }else if(bCompleted && !aCompleted)
+      {
+        return -1;
+      }else{
+        //if both have the same status, compare date
+        var aDate = new Date(a.cells[2].textContent);
+        var bDate = new Date(b.cells[2].textContent);
+
+        //A is newer
+        if(aDate < bDate)
+        {
+          return -1;
+        }else{
+          return 1;
+        }
+      }
+    });
+    $("#episodeTableBody tr").remove();
+    rowArr.forEach(row =>{
+      $("#episodeTableBody").append(row);
+    });
+  }
+
+
 
   onEpisodePlay( data ){
     this.playerService.setCurrentPodcast(this.podcast);
